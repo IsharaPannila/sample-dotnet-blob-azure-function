@@ -1,0 +1,21 @@
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ template "blob-consumer.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "blob-consumer.name" . }}
+    helm.sh/chart: {{ template "blob-consumer.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    deploymentName: {{ template "blob-consumer.fullname" . }}
+  maxReplicaCount: 4
+  pollingInterval: 20
+  cooldownPeriod: 10
+  triggers:
+  - type: azure-blob
+    metadata:
+      blobContainerName: container-name
+      blobPrefix: blobsubpath
+      connection: TEST_STORAGE_CONNECTION_STRING

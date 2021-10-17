@@ -1,0 +1,52 @@
+{{- $name := include "blob-consumer.fullname" . -}} 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "blob-consumer.fullname" . }}
+  labels:
+    app: {{ template "blob-consumer.name" . }}
+    chart: {{ template "blob-consumer.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Chart.AppVersion }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "blob-consumer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "blob-consumer.name" . }}
+        release: {{ .Release.Name }}
+        version: {{ .Chart.AppVersion }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: AzureFunctionsWebHost__hostid
+            value: blobtestsampleapp
+          - name: BLOB_SUB_PATH
+            value: blobsubpath/
+          - name: FUNCTIONS_WORKER_RUNTIME
+            value: dotnet
+          envFrom:
+          - secretRef:
+              name: "{{ $name }}-secret"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
