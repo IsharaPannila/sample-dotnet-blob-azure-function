@@ -11,27 +11,27 @@ The sample blob consumer will recive a single blob at a time(per instance), and 
 
 # Tutorial 
 
-1. Create a new directory for the function app
+### 1. Create a new directory for the function app
 
 ```
 mkdir blob_consumer
 cd blob_consumer
 ```
-2. Initialize the directory for functions
+### 2. Initialize the directory for functions
 
 ```
 func init . --docker
 ```
 Select **dotnet** for function worker runtime
 
-3. Add a new blob triggered function
+### 3. Add a new blob triggered function
 ```
 func new
 ```
 
 Select **BlobTrigger** for the template and enter __blob_consumer__ for the function name
 
-4. Create two Azure storage accounts.
+### 4. Create two Azure storage accounts.
 
 We'll create two azure storage accounts. one for AzureWebJobsStorage and one for adding blobs for processing.
 
@@ -45,12 +45,15 @@ az storage account create --sku Standard_LRS --location westus -g hello-keda -n 
 az storage account create --sku Standard_LRS --location westus -g hello-keda -n <storage-name2>
 ```
 
-5. Update the function metadata with two storage accounts connection strings.
+### 5. Update the function metadata with two storage accounts connection strings.
 
 Open the blob_consumer directory in an editor. We'll need to update the both connection strings info for the blob trigger.
 
 Run the below command twice to copy both connection strings for two storage accounts. Replace the <__storage-name__> with the unique storage account names given for <__storage-name1__> and <__storage-name2__> in above step.
 
+```bash
+az storage account show-connection-string --name <storage-name> --query connectionString
+```
 Open local.settings.json which has the local debug connection string settings. Replace the {AzureWebJobsStorage} and {TEST_STORAGE_CONNECTION_STRING} with the above two connection string values:
 
 **local.settings.json**
@@ -67,7 +70,7 @@ Open local.settings.json which has the local debug connection string settings. R
 }
 ```
 
-6. Debug and test the function locally (optional)
+### 6. Debug and test the function locally (optional)
 
 Start the function locally
 
@@ -90,7 +93,7 @@ You should see your function running locally.
 [15/10/2021 10:45:01 PM] Deleting blob blob-name.txt
 [15/10/2021 10:45:01 PM] Executed 'blob_consumer' (Succeeded, Id=a2c528a0-9b49-456d-9680-ec6973b300d7)
 ```
-**7.Build and push the blob consumer container image**
+**7. Build and push the blob consumer container image**
 
 You need to build and push the ```blob_consumer``` Docker image to a container registry before deploying it to the cluster. For example, to use Docker Hub:
 
