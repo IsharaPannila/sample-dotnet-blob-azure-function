@@ -93,7 +93,7 @@ You should see your function running locally.
 [15/10/2021 10:45:01 PM] Deleting blob blob-name.txt
 [15/10/2021 10:45:01 PM] Executed 'blob_consumer' (Succeeded, Id=a2c528a0-9b49-456d-9680-ec6973b300d7)
 ```
-**7. Build and push the blob consumer container image**
+### 7. Build and push the blob consumer container image
 
 You need to build and push the ```blob_consumer``` Docker image to a container registry before deploying it to the cluster. For example, to use Docker Hub:
 
@@ -103,7 +103,7 @@ docker build -t blob-consumer .
 docker push blob-consumer $REGISTRY/blob-consumer
 ```
 
-**8. Install KEDA**
+### 8. Install KEDA
 
 [Follow the instructions](https://keda.sh/deploy/) to deploy KEDA in your cluster.
 
@@ -116,7 +116,7 @@ NAME                        CREATED AT
 scaledobjects.keda.k8s.io   2020-09-15T01:00:59Z
 ```
 
-**9. Deploy Function App using Helm**
+### 9. Deploy Function App using Helm
 
 First you need to update the ```deploy\blob-consumer\templates\secret.yaml``` file and add the two blob storage connection strings. Replace the below <__storage-account-connection-string__> and <__blob-processing-storage-account-connection-string__> with the two storage account connection string values created in step 4.
 
@@ -131,7 +131,7 @@ cd deploy
 helm install blob-consumer  --namespace default blob-consumer
 ```
 
-**10. Add a blob and validate the function app scales with KEDA**
+### 10. Add a blob and validate the function app scales with KEDA
 
 Initially after deploy should see 0 pods as the blob container is empty.
 ```sh
